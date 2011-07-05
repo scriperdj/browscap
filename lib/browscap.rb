@@ -69,9 +69,7 @@ class Browscap
         browser.is_syndication_reader = properties['isSyndicationReader'].downcase == 'true'
         browser.crawler = properties['Crawler'].downcase == 'true'
         browser.css_version = properties['CssVersion'].to_i
-        browser.supports_css = properties['supportsCSS'].downcase == 'true'
         browser.aol_version = properties['aolVersion'].to_i
-        browser.aol = properties['AOL'].downcase == 'true'
 
         @@user_agent_properties[section] = browser
 
@@ -127,15 +125,15 @@ class Browscap
 end
 
 class Browser
-  attr_accessor :activex_controls, :alpha, :aol, :aol_version, :background_sounds, :beta,
+  attr_accessor :activex_controls, :alpha, :aol_version, :background_sounds, :beta,
     :browser, :cookies, :crawler, :css_version, :frames, :iframes, :is_banned, :is_mobile_device,
     :is_syndication_reader, :java_applets, :javascript, :major_ver, :minor_ver, :platform,
-    :supports_css, :tables, :vbscript, :version, :win16, :win32, :win64
+    :css_version, :tables, :vbscript, :version, :win16, :win32, :win64
 
   [
-    :activex_controls, :alpha, :aol, :background_sounds, :beta, :cookies, :crawler, :frames,
+    :activex_controls, :alpha, :aol_version, :background_sounds, :beta, :cookies, :crawler, :frames,
     :iframes, :is_banned, :is_mobile_device, :is_syndication_reader, :java_applets, :javascript,
-    :supports_css, :tables, :vbscript, :win16, :win32, :win64
+    :css_version, :tables, :vbscript, :win16, :win32, :win64
   ].each do |method_name|
     class_eval %{
       def #{method_name}?
