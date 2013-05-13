@@ -23,9 +23,10 @@ require 'inifile'
 
 class Browscap
   def initialize(filename = File.join(File.dirname(__FILE__), '..', 'ini', 'default.ini'))
-    @@user_agent_properties ||= {}
-    @@user_agent_regexps ||= {}
-    @@match_cache ||= {}
+    @@user_agent_properties ||= Marshal.load(REDIS.fetch('browscap:user_agent_properties'){Marshal.dump({})})
+    @@user_agent_regexps    ||= Marshal.load(REDIS.fetch('browscap:user_agent_regexps'){Marshal.dump({})})
+    @@match_cache           ||= Marshal.load(REDIS.fetch('browscap:match_cache'){Marshal.dump({})})
+
 
     if @@user_agent_properties.empty? || @@user_agent_regexps.empty?
       ini = IniFile.load(filename)
@@ -81,6 +82,11 @@ class Browscap
 
         @@user_agent_regexps[section] = Regexp.new("^%s$" % regexp)
       end
+
+      # Cache data structure, faster than loading from file
+      REDIS.set('browscap:user_agent_properties', Marshal.dump(@@user_agent_properties))
+      REDIS.set('browscap:user_agent_regexps', Marshal.dump(@@user_agent_regexps))
+      REDIS.set('browscap:match_cache', Marshal.dump(@@match_cache))      
     end
   end
 
