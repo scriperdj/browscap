@@ -65,7 +65,6 @@ class Browscap
         browser.vbscript = properties['VBScript'].downcase == 'true'
         browser.java_applets = properties['JavaApplets'].downcase == 'true'
         browser.activex_controls = properties['ActiveXControls'].downcase == 'true'
-        browser.is_banned = properties['isBanned'].downcase == 'true'
         browser.is_mobile_device = properties['isMobileDevice'].downcase == 'true'
         browser.is_syndication_reader = properties['isSyndicationReader'].downcase == 'true'
         browser.crawler = properties['Crawler'].downcase == 'true'
@@ -141,13 +140,13 @@ end
 
 class Browser
   attr_accessor :activex_controls, :alpha, :aol_version, :background_sounds, :beta,
-    :browser, :cookies, :crawler, :css_version, :frames, :iframes, :is_banned, :is_mobile_device,
+    :browser, :cookies, :crawler, :css_version, :frames, :iframes, :is_mobile_device,
     :is_syndication_reader, :java_applets, :javascript, :major_ver, :minor_ver, :platform,
     :css_version, :tables, :vbscript, :version, :win16, :win32, :win64
 
   [
     :activex_controls, :alpha, :aol_version, :background_sounds, :beta, :cookies, :crawler, :frames,
-    :iframes, :is_banned, :is_mobile_device, :is_syndication_reader, :java_applets, :javascript,
+    :iframes, :is_mobile_device, :is_syndication_reader, :java_applets, :javascript,
     :css_version, :tables, :vbscript, :win16, :win32, :win64
   ].each do |method_name|
     class_eval %{
@@ -155,5 +154,9 @@ class Browser
         @#{method_name}
       end
     }
+  end
+
+  def is_banned
+    raise "is_banned is no longer supported"
   end
 end
