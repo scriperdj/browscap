@@ -23,9 +23,9 @@ require 'inifile'
 
 class Browscap
   def initialize(filename = File.join(File.dirname(__FILE__), '..', 'ini', 'default.ini'))
-    @@user_agent_properties ||= Marshal.load(REDIS.fetch('browscap:user_agent_properties'){Marshal.dump({})})
-    @@user_agent_regexps    ||= Marshal.load(REDIS.fetch('browscap:user_agent_regexps'){Marshal.dump({})})
-    @@match_cache           ||= Marshal.load(REDIS.fetch('browscap:match_cache'){Marshal.dump({})})
+    @@user_agent_properties ||= cache_get('browscap:user_agent_properties')
+    @@user_agent_regexps    ||= cache_get('browscap:user_agent_regexps')
+    @@match_cache           ||= cache_get('browscap:match_cache')
 
 
     if @@user_agent_properties.empty? || @@user_agent_regexps.empty?
@@ -84,9 +84,9 @@ class Browscap
       end
 
       # Cache data structure, faster than loading from file
-      REDIS.set('browscap:user_agent_properties', Marshal.dump(@@user_agent_properties))
-      REDIS.set('browscap:user_agent_regexps', Marshal.dump(@@user_agent_regexps))
-      REDIS.set('browscap:match_cache', Marshal.dump(@@match_cache))      
+      cache_set('browscap:user_agent_properties', @@user_agent_properties)
+      cache_set('browscap:user_agent_regexps', @@user_agent_regexps)
+      cache_set('browscap:match_cache', @@match_cache)
     end
   end
 
@@ -127,6 +127,15 @@ class Browscap
 
     data.merge! ini[section]
     data
+  end
+
+  # TODO support file as a cache store
+  def cache_set(key, value)
+    REDIS.set(key, Marshal.dump(value))      
+  end
+
+  def cache_get(key, default={})
+    Marshal.load(REDIS.fetch(key){Marshal.dump(default)})
   end
 end
 
