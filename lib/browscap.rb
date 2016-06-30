@@ -130,11 +130,11 @@ class Browscap
 
   # TODO support file as a cache store
   def cache_set(key, value)
-    REDIS.set(key, Marshal.dump(value))      
+    Rails.cache.write(key, Marshal.dump(value))      
   end
 
   def cache_get(key, default={})
-    Marshal.load(REDIS.fetch(key){Marshal.dump(default)})
+    Marshal.load(Rails.cache.read(key){Marshal.dump(default)})
   end
 end
 
